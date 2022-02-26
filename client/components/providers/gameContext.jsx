@@ -1,6 +1,7 @@
 import { useEffect, useState, createContext, useContext } from 'react'
 import { ethers } from 'ethers'
 import { contractABI, contractAddress } from '@lib/constants'
+import transformCharacterData from '@lib/transformCharacterData'
 
 export const GameContext = createContext()
 
@@ -20,6 +21,8 @@ const createEthereumContract = () => {
 
 export const GameProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState(null)
+  const [characterNFT, setCharacterNFT] = useState(null)
+  const [gameContract, setGameContract] = useState(null)
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -29,24 +32,17 @@ export const GameProvider = ({ children }) => {
       if (accounts.length !== 0) {
         const account = accounts[0]
         setCurrentAccount(account)
-      } else {
-        console.log('No authorized account found')
       }
     } catch (error) {
       console.log(error)
     }
   }
 
-  const connectWalletAction = async () => {
+  const checkNetwork = async () => {
     try {
-      if (!ethereum) return alert('Please install MetaMask.')
-
-      const accounts = await ethereum.request({
-        method: 'eth_requestAccounts',
-      })
-
-      console.log('Connected', accounts[0])
-      setCurrentAccount(accounts[0])
+      if (ethereum.networkVersion !== '4') {
+        alert('Please connect to Rinkeby!')
+      }
     } catch (error) {
       console.log(error)
     }
@@ -55,8 +51,29 @@ export const GameProvider = ({ children }) => {
   useEffect(() => {
     checkIfWalletIsConnected()
   }, [])
+
+  useEffect(() => {
+    if (!currentAccount) return
+    ;(async () => {
+      const gameContract = createEthereumContract()
+      setGameContract(gameContract)
+      const CharacterData = await gameContract.checkIfUserHasNFT()
+
+      if (CharacterData.name) {
+        setCharacterNFT(transformCharacterData(CharacterData))
+      }
+    })()
+  }, [currentAccount])
+
   return (
-    <GameContext.Provider value={{ connectWalletAction }}>
+    <GameContext.Provider
+      value={{
+        currentAccount,
+        characterNFT,
+        setCharacterNFT,
+        gameContract,
+      }}
+    >
       {children}
     </GameContext.Provider>
   )
