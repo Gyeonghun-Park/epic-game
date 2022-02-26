@@ -15,6 +15,11 @@ function Arena({ gameContract, characterNFT, setCharacterNFT }) {
         const attackTxn = await gameContract.attackBoss()
         await attackTxn.wait()
         setAttackState('hit')
+
+        setShowToast(true)
+        setTimeout(() => {
+          setShowToast(false)
+        }, 5000)
       }
     } catch (error) {
       console.error('Error attacking boss:', error)

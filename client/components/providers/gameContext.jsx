@@ -50,6 +50,7 @@ export const GameProvider = ({ children }) => {
 
   useEffect(() => {
     checkIfWalletIsConnected()
+    checkNetwork()
   }, [])
 
   useEffect(() => {

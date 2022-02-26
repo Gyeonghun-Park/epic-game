@@ -1,4 +1,4 @@
 import abi from './MyEpicGame.json'
 
-export const contractAddress = '0x77CcE7319180eDF15113bcDCbD712b69758D80A5'
+export const contractAddress = '0x869e1fa231c7Ed7212349c68F8E6Afb15A975848'
 export const contractABI = abi.abi

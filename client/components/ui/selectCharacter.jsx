@@ -9,6 +9,7 @@ function SelectCharacter({ gameContract, setCharacterNFT }) {
     try {
       if (!gameContract) return
       const mintTxn = await gameContract.mintCharacterNFT(characterId)
+      alert('Minting character in progress...')
       await mintTxn.wait()
     } catch (error) {
       console.warn('MintCharacterAction Error:', error)
@@ -32,13 +33,15 @@ function SelectCharacter({ gameContract, setCharacterNFT }) {
     const onCharacterMint = async (sender, tokenId, characterIndex) => {
       if (gameContract) {
         const characterNFT = await gameContract.checkIfUserHasNFT()
-        console.log('CharacterNFT: ', characterNFT)
         setCharacterNFT(transformCharacterData(characterNFT))
         alert(
-          `Your NFT is all done -- see it here: https://testnets.opensea.io/assets/${gameContract}/${tokenId.toNumber()}`
+          `Your NFT is all done -- see it here: https://testnets.opensea.io/assets/${
+            gameContract.address
+          }/${tokenId.toNumber()}`
         )
       }
     }
+    gameContract.on('CharacterNFTMinted', onCharacterMint)
 
     return () => {
       if (gameContract) {
