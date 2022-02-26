@@ -69,6 +69,7 @@ export const GameProvider = ({ children }) => {
     <GameContext.Provider
       value={{
         currentAccount,
+        setCurrentAccount,
         characterNFT,
         setCharacterNFT,
         gameContract,

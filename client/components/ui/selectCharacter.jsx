@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import transformCharacterData from '@lib/transformCharacterData'
 
-function SelectCharacter({ setCharacterNFT, gameContract }) {
+function SelectCharacter({ gameContract, setCharacterNFT }) {
   const [characters, setCharacters] = useState([])
 
   const mintCharacterNFTAction = (characterId) => async () => {
